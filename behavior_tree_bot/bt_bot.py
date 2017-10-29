@@ -30,20 +30,28 @@ def setup_behavior_tree():
     neutral_aquire = Action(get_best_neutral)
     get_best_neutral_plan.child_nodes = [neutral_planet_check, neutral_aquire]
 
+    attack_biggest_planet = Sequence(name="Attach Biggest Planet")
+    biggest_planet_check = Check(if_can_take_biggest_enemy)
+    attack_biggest = Action(take_biggest_planet)
+    attack_biggest_planet.child_nodes = [biggest_planet_check, attack_biggest]
 
-    offensive_plan = Sequence(name='Offensive Strategy')
-    largest_fleet_check = Check(have_largest_fleet)
-    attack = Action(attack_weakest_enemy_planet)
-    offensive_plan.child_nodes = [largest_fleet_check, attack]
+    attack_biggest_growth = Action(attack_enemy_with_biggest_growth_rate)
 
-    spread_sequence = Sequence(name='Spread Strategy')
-    neutral_planet_check = Check(if_neutral_planet_available)
-    spread_action = Action(spread_to_weakest_neutral_planet)
-    spread_sequence.child_nodes = [neutral_planet_check, spread_action]
+    root.child_nodes = [get_best_neutral_plan, attack_biggest_planet, attack_biggest_growth]
+
+
+    # offensive_plan = Sequence(name='Offensive Strategy')
+    # largest_fleet_check = Check(have_largest_fleet)
+    # attack = Action(attack_weakest_enemy_planet)
+    # offensive_plan.child_nodes = [largest_fleet_check, attack]
+    #
+    # spread_sequence = Sequence(name='Spread Strategy')
+    # neutral_planet_check = Check(if_neutral_planet_available)
+    # spread_action = Action(spread_to_weakest_neutral_planet)
+    # spread_sequence.child_nodes = [neutral_planet_check, spread_action]
 
     #root.child_nodes = [get_best_neutral_plan, offensive_plan, spread_sequence, attack.copy()]
 
-    root.child_nodes = [get_best_neutral_plan]
 
     logging.info('\n' + root.tree_to_string())
     return root
